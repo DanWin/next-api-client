@@ -18,7 +18,7 @@ foreach ($allWebinars as $webinar) {
     echo $webinar->getTitle(), PHP_EOL;
 
     foreach ($webinar->getDates() as $webinarDate) {
-        echo ' Date: ', $webinarDate->getDate()->format('h:i:s m/d/Y'), PHP_EOL;
+        echo ' Date: ', $webinarDate->getDate()->format('H:i:s m/d/Y'), PHP_EOL;
         echo ' Duration: ', $webinarDate->getDuration(), ' mins.', PHP_EOL;
     }
 }

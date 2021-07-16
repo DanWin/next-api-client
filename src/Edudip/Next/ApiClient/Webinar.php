@@ -2,6 +2,7 @@
 
 namespace Edudip\Next\ApiClient;
 
+use DateTime;
 use Edudip\Next\ApiClient\Error\AuthenticationException;
 use Edudip\Next\ApiClient\Error\InvalidArgumentException;
 use Edudip\Next\ApiClient\Error\ResponseException;
@@ -15,15 +16,82 @@ use Exception;
 
 class Webinar extends AbstractRequest
 {
-    // @var array
-    private $data;
+    // @var int
+    private $id;
 
-	/**
-	 * @param array $data
-	 */
+    // @var string
+    private $title;
+
+    // @var int
+    private $max_participants;
+
+    // @var int
+    private $participants_count;
+
+    // @var array
+    private $participants;
+
+    // @var array
+    private $moderators;
+
+    // @var int
+    private $recording;
+
+    // @var string
+    private $registration_type;
+
+    // @var string
+    private $access;
+
+    // @var array
+    private $dates;
+
+    // @var int
+    private $users_id;
+
+    // @var string
+    private $language;
+
+    // @var Landingpage
+    private $landingpage;
+
+    // @var ?DateTime
+    private $next_date;
+
+    // @var ?DateTime
+    private $created_at;
+
+    // @var ?DateTime
+    private $updated_at;
+
+    /**
+     * @param array $data
+     */
     public function __construct(array $data)
     {
-        $this->data = $data;
+        $this->id = $data['id'] ?? null;
+        $this->title = $data['title'] ?? '';
+        $this->max_participants = $data['max_participants'] ?? 1;
+        $this->participants = $data['participants'] ?? [];
+        $this->moderators = $data['moderators'] ?? [];
+        $this->recording = $data['recording'] ?? 0;
+        $this->registration_type = $data['registration_type'] ?? 'series';
+        $this->access = $data['access'] ?? 'all';
+        $this->dates = $data['dates'] ?? [];
+        $this->users_id = $data['users_id'] ?? null;
+        $this->language = $data['language'] ?? null;
+        if(!empty($data['landingpage'])){
+            $this->landingpage = new Landingpage($data['landingpage']['url'], $data['landingpage']['image']['url'], $data['landingpage']['image']['type'], $data['landingpage']['description'], $data['landingpage']['description_short'], $data['landingpage']['category']);
+        }
+        if($data['next_date'] !== null && WebinarDate::validateDateString($data['next_date'])) {
+            $this->next_date = DateTime::createFromFormat('Y-m-d H:i:s', $data['next_date']);
+        }
+        if($data['created_at'] !== null && WebinarDate::validateDateString($data['created_at'])) {
+            $this->created_at = DateTime::createFromFormat('Y-m-d H:i:s', $data['created_at']);
+        }
+        if($data['updated_at'] !== null && WebinarDate::validateDateString($data['updated_at'])) {
+            $this->updated_at = DateTime::createFromFormat('Y-m-d H:i:s', $data['updated_at']);
+        }
     }
 
     /**
@@ -31,67 +99,231 @@ class Webinar extends AbstractRequest
      */
     public function getTitle() : string
     {
-        return $this->data['title'];
+        return $this->title;
     }
 
-	/**
-	 * @return array A list of WebinarDates objects, representing
-	 *  the dates, the webinar takes place.
-	 * @throws Exception
-	 */
+    /**
+     * @param string $title
+     */
+    public function setTitle( string $title ) : void
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return array A list of WebinarDates objects, representing
+     *  the dates, the webinar takes place.
+     * @throws Exception
+     */
     public function getDates() : array
     {
         $webinarDates = [ ];
 
-        foreach ($this->data['dates'] as $date) {
+        foreach ($this->dates as $date) {
             $webinarDates []= WebinarDate::deserialize($date);
         }
 
         return $webinarDates;
     }
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
     public function getId() : int
     {
-        return $this->data['id'];
+        return $this->id;
     }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
     public function getParticipants() : array
     {
-        if (! array_key_exists('participants', $this->data)) {
-            return [ ];
-        }
-
-        return $this->data['participants'];
+        return $this->participants;
     }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
     public function getModerators() : array
     {
-        if (! array_key_exists('moderators', $this->data)) {
-            return [ ];
-        }
-
-        return $this->data['moderators'];
+        return $this->moderators;
     }
 
-	/**
-	 * @return array
-	 */
-    public function getUser() : array
+    /**
+     * @return int
+     */
+    public function getMaxParticipants(): int
     {
-        if (! array_key_exists('user', $this->data)) {
-            return [ ];
-        }
+        return $this->max_participants;
+    }
 
-        return $this->data['user'];
+    /**
+     * @param int $max_participants
+     */
+    public function setMaxParticipants( int $max_participants ): void
+    {
+        $this->max_participants = $max_participants;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRecording(): int
+    {
+        return $this->recording;
+    }
+
+    /**
+     * @param int $recording
+     */
+    public function setRecording( int $recording ): void
+    {
+        $this->recording = $recording;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRegistrationType(): string
+    {
+        return $this->registration_type;
+    }
+
+    /**
+     * @param string $registration_type
+     */
+    public function setRegistrationType( string $registration_type ): void
+    {
+        $this->registration_type = $registration_type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccess(): string
+    {
+        return $this->access;
+    }
+
+    /**
+     * @param string $access
+     */
+    public function setAccess( string $access ): void
+    {
+        $this->access = $access;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUsersId(): ?int
+    {
+        return $this->users_id;
+    }
+
+    /**
+     * @param int|null $users_id
+     */
+    public function setUsersId( ?int $users_id ): void
+    {
+        $this->users_id = $users_id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLanguage(): ?string
+    {
+        return $this->language;
+    }
+
+    /**
+     * @param string|null $language
+     */
+    public function setLanguage( ?string $language ): void
+    {
+        $this->language = $language;
+    }
+
+    /**
+     * @return int
+     */
+    public function getParticipantsCount() : int
+    {
+        return $this->participants_count;
+    }
+
+    /**
+     * @param int $participants_count
+     */
+    public function setParticipantsCount( int $participants_count ): void
+    {
+        $this->participants_count = $participants_count;
+    }
+
+    /**
+     * @return Landingpage|null
+     */
+    public function getLandingpage() : ?Landingpage
+    {
+        return $this->landingpage;
+    }
+
+    /**
+     * @param Landingpage|null $landingpage
+     */
+    public function setLandingpage( ?Landingpage $landingpage ): void
+    {
+        $this->landingpage = $landingpage;
+    }
+
+    /**
+     * @return ?DateTime
+     */
+    public function getNextDate() : ? DateTime
+    {
+        return $this->next_date;
+    }
+
+    /**
+     * @param ?DateTime $next_date
+     */
+    public function setNextDate( ?DateTime $next_date ): void
+    {
+        $this->next_date = $next_date;
+    }
+
+    /**
+     * @return ?DateTime
+     */
+    public function getCreatedAt() : ?DateTime
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param ?DateTime $created_at
+     */
+    public function setCreatedAt( ?DateTime $created_at ): void
+    {
+        $this->created_at = $created_at;
+    }
+
+    /**
+     * @return ?DateTime
+     */
+    public function getUpdatedAt() : ?DateTime
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * @param ?DateTime $updated_at
+     */
+    public function setUpdatedAt( ?DateTime $updated_at ): void
+    {
+        $this->updated_at = $updated_at;
     }
 
     /**
@@ -108,7 +340,7 @@ class Webinar extends AbstractRequest
     {
         $params = $participant->toArray();
 
-        if ($this->data['registration_type'] === 'date') {
+        if ($this->registration_type === 'date') {
             if ($date === null || ! WebinarDate::validateDateString($date)) {
                 throw new InvalidArgumentException(
                     'Registration type for the webinar is "date". Please provide a valid webinar date to register a participant'
@@ -141,13 +373,13 @@ class Webinar extends AbstractRequest
         return $webinars;
     }
 
-	/**
-	 * Retrieves a single webinar by id
-	 * @param int $webinarId
-	 * @return Webinar
-	 * @throws AuthenticationException
-	 * @throws ResponseException
-	 */
+    /**
+     * Retrieves a single webinar by id
+     * @param int $webinarId
+     * @return Webinar
+     * @throws AuthenticationException
+     * @throws ResponseException
+     */
     public static function getById(int $webinarId) : Webinar
     {
         $resp = self::getRequest('/webinars/' . $webinarId);
@@ -168,7 +400,9 @@ class Webinar extends AbstractRequest
         int $maxParticipants,
         bool $recording,
         string $registrationType = 'series',
-        string $access = 'all'
+        string $access = 'all',
+        ?int $users_id = null,
+        ?string $language = null,
     ) : Webinar {
         if (count($webinarDates) === 0) {
             throw new InvalidArgumentException('Please provide at least one webinar date');
@@ -188,6 +422,12 @@ class Webinar extends AbstractRequest
             'access' => $access,
             'dates' => json_encode($webinarDates),
         ];
+        if(!is_null($users_id)){
+            $params['users_id'] = $users_id;
+        }
+        if(!is_null($language)){
+            $params['language'] = $language;
+        }
 
         $resp = self::postRequest('/webinars', $params);
 
