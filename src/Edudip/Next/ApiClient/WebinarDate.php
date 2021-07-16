@@ -3,6 +3,7 @@
 namespace Edudip\Next\ApiClient;
 
 use DateTime;
+use Exception;
 use JsonSerializable;
 
 /**
@@ -22,6 +23,10 @@ final class WebinarDate implements JsonSerializable
     // @var int
     private $duration;
 
+	/**
+	 * @param DateTime $date
+	 * @param int $duration
+	 */
     public function __construct(DateTime $date, int $duration)
     {
         $this->date = $date;
@@ -39,38 +44,46 @@ final class WebinarDate implements JsonSerializable
     /**
      * @return int
      */
-    public function getId()
+    public function getId() : int
     {
         return $this->id;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getDate()
+    public function getDate() : DateTime
     {
         return $this->date;
     }
 
-    public function getDuration()
+	/**
+	 * @return int
+	 */
+	public function getDuration() : int
     {
         return $this->duration;
     }
 
-    public function jsonSerialize()
+	/**
+	 * @return array
+	 */
+    public function jsonSerialize() : array
     {
         return [
             'date' => $this->date->format('Y-m-d H:i:s'),
-            'duration' => (int) $this->duration,
+            'duration' => $this->duration,
         ];
     }
 
-    /**
-     * Unboxes a webinar date json string back into a
-     *  WebinarDate object
-     * @return self
-     */
-    public static function deserialize(array $input)
+	/**
+	 * Unboxes a webinar date json string back into a
+	 *  WebinarDate object
+	 * @param array $input
+	 * @return self
+	 * @throws Exception
+	 */
+    public static function deserialize(array $input) : WebinarDate
     {
         $webinarDate = new self(
             new DateTime($input['date']),
@@ -82,12 +95,13 @@ final class WebinarDate implements JsonSerializable
         return $webinarDate;
     }
 
-    /**
-     * Tests, if the given input string is a valid Datetime
-     *  string in the form of "YYYY-MM-DD HH:MM:SS"
-     * @return boolean
-     */
-    public static function validateDateString($input)
+	/**
+	 * Tests, if the given input string is a valid Datetime
+	 *  string in the form of "YYYY-MM-DD HH:MM:SS"
+	 * @param string $input
+	 * @return bool
+	 */
+    public static function validateDateString(string $input) : bool
     {
         $fmtStr = 'Y-m-d H:i:s';
         $dt = DateTime::createFromFormat($fmtStr, $input);

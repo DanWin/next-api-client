@@ -32,7 +32,10 @@ final class EdudipNext
         self::$apiKey = $apiKey;
     }
 
-    public static function getApiBase()
+	/**
+	 * @return string
+	 */
+    public static function getApiBase() : string
     {
         return self::$apiBase;
     }

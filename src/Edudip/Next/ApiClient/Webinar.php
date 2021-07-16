@@ -2,7 +2,10 @@
 
 namespace Edudip\Next\ApiClient;
 
-use Edudip\Next\Error\InvalidArgumentException;
+use Edudip\Next\ApiClient\Error\AuthenticationException;
+use Edudip\Next\ApiClient\Error\InvalidArgumentException;
+use Edudip\Next\ApiClient\Error\ResponseException;
+use Exception;
 
 /**
  * @author Marc Steinert <m.steinert@edudip.com>
@@ -15,6 +18,9 @@ class Webinar extends AbstractRequest
     // @var array
     private $data;
 
+	/**
+	 * @param array $data
+	 */
     public function __construct(array $data)
     {
         $this->data = $data;
@@ -23,16 +29,17 @@ class Webinar extends AbstractRequest
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle() : string
     {
         return $this->data['title'];
     }
 
-    /**
-     * @return array A list of WebinarDates objects, representing
-     *  the dates, the webinar takes place.
-     */
-    public function getDates()
+	/**
+	 * @return array A list of WebinarDates objects, representing
+	 *  the dates, the webinar takes place.
+	 * @throws Exception
+	 */
+    public function getDates() : array
     {
         $webinarDates = [ ];
 
@@ -43,11 +50,17 @@ class Webinar extends AbstractRequest
         return $webinarDates;
     }
 
-    public function getId()
+	/**
+	 * @return int
+	 */
+    public function getId() : int
     {
         return $this->data['id'];
     }
 
+	/**
+	 * @return array
+	 */
     public function getParticipants() : array
     {
         if (! array_key_exists('participants', $this->data)) {
@@ -57,6 +70,9 @@ class Webinar extends AbstractRequest
         return $this->data['participants'];
     }
 
+	/**
+	 * @return array
+	 */
     public function getModerators() : array
     {
         if (! array_key_exists('moderators', $this->data)) {
@@ -66,6 +82,9 @@ class Webinar extends AbstractRequest
         return $this->data['moderators'];
     }
 
+	/**
+	 * @return array
+	 */
     public function getUser() : array
     {
         if (! array_key_exists('user', $this->data)) {
@@ -76,14 +95,16 @@ class Webinar extends AbstractRequest
     }
 
     /**
-     * @throws \Edudip\Next\Error\InvalidArgumentException;
-     * @param \Edudip\Next\ApiClient\Participant $participant
-     * @param string $date If the webinar registration type is "date", provide a webinar
+     * @param Participant $participant
+     * @param ?string $date If the webinar registration type is "date", provide a webinar
      *  date in the format "Y-m-d H:i:s" to which the participant should be registered to
      * @return array A list of dates, the participant may now attend with a personalized
      *  link, that can be used on that date to enter the webinar room
+     * @throws InvalidArgumentException;
+     * @throws AuthenticationException
+     * @throws ResponseException
      */
-    public function registerParticipant(Participant $participant, $date = null)
+    public function registerParticipant(Participant $participant, ?string $date = null) : array
     {
         $params = $participant->toArray();
 
@@ -105,8 +126,10 @@ class Webinar extends AbstractRequest
     /**
      * Returns a list of all webinars
      * @return array
+     * @throws AuthenticationException
+     * @throws ResponseException
      */
-    public static function all()
+    public static function all() : array
     {
         $resp = self::getRequest('/webinars');
 
@@ -118,11 +141,14 @@ class Webinar extends AbstractRequest
         return $webinars;
     }
 
-    /**
-     * Retrieves a single webinar by id
-     * @return array
-     */
-    public static function getById(int $webinarId)
+	/**
+	 * Retrieves a single webinar by id
+	 * @param int $webinarId
+	 * @return Webinar
+	 * @throws AuthenticationException
+	 * @throws ResponseException
+	 */
+    public static function getById(int $webinarId) : Webinar
     {
         $resp = self::getRequest('/webinars/' . $webinarId);
         $webinar = new self($resp['webinar']);
@@ -132,7 +158,9 @@ class Webinar extends AbstractRequest
 
     /**
      * Creates a new webinar
-     * @throws \Edudip\Next\ApiClient\Error\InvalidArgumentException
+     * @throws InvalidArgumentException
+     * @throws AuthenticationException
+     * @throws ResponseException
      */
     public static function create(
         string $title,
@@ -155,7 +183,7 @@ class Webinar extends AbstractRequest
         $params = [
             'title' => $title,
             'max_participants' => $maxParticipants,
-            'recording' => $recording ? true : false,
+            'recording' => $recording,
             'registration_type' => $registrationType,
             'access' => $access,
             'dates' => json_encode($webinarDates),

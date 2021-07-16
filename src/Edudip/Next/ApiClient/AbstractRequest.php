@@ -19,19 +19,27 @@ abstract class AbstractRequest
     // @var string User agent string to send in http requests
     const USER_AGENT = 'edudip/next-api-client (github.com/edudip/next-api-client)';
 
-    protected static function getRequest(string $endpoint, array $params = array())
+	/**
+	 * @throws AuthenticationException
+	 * @throws ResponseException
+	 */
+	protected static function getRequest( string $endpoint, array $params = array())
     {
         return self::makeRequest('GET', $endpoint, $params);
-    } 
+    }
 
-    protected static function postRequest(string $endpoint, array $params = array())
+	/**
+	 * @throws AuthenticationException
+	 * @throws ResponseException
+	 */
+	protected static function postRequest( string $endpoint, array $params = array())
     {
         return self::makeRequest('POST', $endpoint, $params);
     }
 
     /**
-     * @throws \Edudip\Next\ApiClient\ResponseException
-     * @throws \Edudip\Next\ApiClient\AuthenticationException
+     * @throws ResponseException
+     * @throws AuthenticationException
      */
     protected static function makeRequest($httpVerb, $endpoint, $params = array())
     {
@@ -99,7 +107,11 @@ abstract class AbstractRequest
         return $json;
     }
 
-    private static function buildPostString(array $params)
+	/**
+	 * @param array $params
+	 * @return string
+	 */
+    private static function buildPostString(array $params) : string
     {
         $postString = '';
         
@@ -112,7 +124,11 @@ abstract class AbstractRequest
         return $postString;
     }
 
-    private static function buildEndpointUrl($endpoint)
+	/**
+	 * @param $endpoint
+	 * @return string
+	 */
+    private static function buildEndpointUrl($endpoint) : string
     {
         return sprintf(
             '%s/%s',

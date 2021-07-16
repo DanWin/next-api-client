@@ -24,6 +24,11 @@ final class Participant implements JsonSerializable
     // @var array
     private $registeredDates;
 
+	/**
+	 * @param string $email
+	 * @param string $firstname
+	 * @param string $lastname
+	 */
     public function __construct(string $email, string $firstname, string $lastname)
     {
         $this->email = $email;
@@ -31,6 +36,9 @@ final class Participant implements JsonSerializable
         $this->lastname = $lastname;
     }
 
+	/**
+	 * @param array $dates
+	 */
     public function setRegisteredDates(array $dates)
     {
         $this->registeredDates = $dates;
@@ -39,7 +47,7 @@ final class Participant implements JsonSerializable
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray() : array
     {
         return [
             'email' => $this->email,
@@ -48,7 +56,10 @@ final class Participant implements JsonSerializable
         ];
     }
 
-    public function jsonSerialize()
+	/**
+	 * @return array
+	 */
+    public function jsonSerialize() : array
     {
         return $this->toArray();
     }
