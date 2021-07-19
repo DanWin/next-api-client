@@ -27,7 +27,7 @@ final class Landingpage implements JsonSerializable
     // @var string
     private $description_short;
 
-    // @var string
+    // @var array
     private $category;
 
     /**
@@ -36,7 +36,7 @@ final class Landingpage implements JsonSerializable
      * @param string $image_type
      * @param string $description
      * @param string $description_short
-     * @param string|null $category
+     * @param array|null $category
      */
     public function __construct(
         string $url,
@@ -44,7 +44,7 @@ final class Landingpage implements JsonSerializable
         string $image_type,
         string $description,
         string $description_short,
-        ?string $category
+        ?array $category
     )
     {
         $this->url = $url;
@@ -136,17 +136,17 @@ final class Landingpage implements JsonSerializable
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getCategory() : ?string
+    public function getCategory() : ?array
     {
         return $this->category;
     }
 
     /**
-     * @param string|null $category
+     * @param array|null $category
      */
-    public function setCategory( ?string $category ): void
+    public function setCategory( ?array $category ): void
     {
         $this->category = $category;
     }

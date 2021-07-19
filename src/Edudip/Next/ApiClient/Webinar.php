@@ -83,13 +83,13 @@ class Webinar extends AbstractRequest
         if(!empty($data['landingpage'])){
             $this->landingpage = new Landingpage($data['landingpage']['url'], $data['landingpage']['image']['url'], $data['landingpage']['image']['type'], $data['landingpage']['description'], $data['landingpage']['description_short'], $data['landingpage']['category']);
         }
-        if($data['next_date'] !== null && WebinarDate::validateDateString($data['next_date'])) {
+        if(!empty($data['next_date']) && WebinarDate::validateDateString($data['next_date'])) {
             $this->next_date = DateTime::createFromFormat('Y-m-d H:i:s', $data['next_date']);
         }
-        if($data['created_at'] !== null && WebinarDate::validateDateString($data['created_at'])) {
+        if(!empty($data['created_at']) && WebinarDate::validateDateString($data['created_at'])) {
             $this->created_at = DateTime::createFromFormat('Y-m-d H:i:s', $data['created_at']);
         }
-        if($data['updated_at'] !== null && WebinarDate::validateDateString($data['updated_at'])) {
+        if(!empty($data['updated_at']) && WebinarDate::validateDateString($data['updated_at'])) {
             $this->updated_at = DateTime::createFromFormat('Y-m-d H:i:s', $data['updated_at']);
         }
     }

@@ -2,7 +2,6 @@
 
 require 'vendor/autoload.php';
 
-use Edudip\Next\ApiClient\AbstractRequest;
 use Edudip\Next\ApiClient\EdudipNext;
 use Edudip\Next\ApiClient\Webinar;
 use Edudip\Next\ApiClient\WebinarDate;
