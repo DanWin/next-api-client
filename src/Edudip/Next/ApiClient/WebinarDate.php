@@ -222,12 +222,18 @@ final class WebinarDate implements JsonSerializable
      */
     public static function deserialize(array $input) : WebinarDate
     {
+        $date_end = null;
+        if(is_string($input['date_end']) && self::validateDateString($input['date_end'])){
+            $date_end = DateTime::createFromFormat('Y-m-d H:i:s', $input['date_end']);
+        }
         $webinarDate = new self(
             new DateTime($input['date']),
-            $input['duration']
+            $input['duration'],
+            $input['id'] ?? null,
+            null,
+            null,
+            $date_end,
         );
-
-        $webinarDate->setId($input['id']);
 
         return $webinarDate;
     }

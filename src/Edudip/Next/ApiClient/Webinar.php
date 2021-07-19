@@ -61,7 +61,7 @@ class Webinar extends AbstractRequest
     // @var Landingpage
     private $landingpage;
 
-    // @var ?DateTime
+    // @var ?WebinarDate
     private $next_date;
 
     // @var ?DateTime
@@ -94,8 +94,12 @@ class Webinar extends AbstractRequest
         if(!empty($data['landingpage'])){
             $this->landingpage = new Landingpage($data['landingpage']['url'], $data['landingpage']['image']['url'], $data['landingpage']['image']['type'], $data['landingpage']['description'], $data['landingpage']['description_short'], $data['landingpage']['category']);
         }
-        if(!empty($data['next_date']) && WebinarDate::validateDateString($data['next_date'])) {
-            $this->next_date = DateTime::createFromFormat('Y-m-d H:i:s', $data['next_date']);
+        if(!empty($data['next_date'])) {
+            try {
+                $this->next_date = WebinarDate::deserialize( $data[ 'next_date' ] );
+            } catch (Exception $e){
+
+            }
         }
         if(!empty($data['created_at']) && WebinarDate::validateDateString($data['created_at'])) {
             $this->created_at = DateTime::createFromFormat('Y-m-d H:i:s', $data['created_at']);
@@ -323,17 +327,17 @@ class Webinar extends AbstractRequest
     }
 
     /**
-     * @return ?DateTime
+     * @return ?WebinarDate
      */
-    public function getNextDate() : ? DateTime
+    public function getNextDate() : ? WebinarDate
     {
         return $this->next_date;
     }
 
     /**
-     * @param ?DateTime $next_date
+     * @param ?WebinarDate $next_date
      */
-    public function setNextDate( ?DateTime $next_date ): void
+    public function setNextDate( ?WebinarDate $next_date ): void
     {
         $this->next_date = $next_date;
     }
@@ -462,7 +466,7 @@ class Webinar extends AbstractRequest
         string $registrationType = 'series',
         string $access = 'all',
         ?int $users_id = null,
-        ?string $language = null,
+        ?string $language = null
     ) : Webinar {
         if (count($webinarDates) === 0) {
             throw new InvalidArgumentException('Please provide at least one webinar date');
