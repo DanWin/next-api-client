@@ -40,6 +40,9 @@ class Webinar extends AbstractRequest
     // @var string
     private $registration_type;
 
+    // @var bool
+    private $registration_type_editable;
+
     // @var string
     private $access;
 
@@ -48,6 +51,9 @@ class Webinar extends AbstractRequest
 
     // @var int
     private $users_id;
+
+    // @var array
+    private $user;
 
     // @var string
     private $language;
@@ -64,6 +70,9 @@ class Webinar extends AbstractRequest
     // @var ?DateTime
     private $updated_at;
 
+    // @var ?string
+    private $slug;
+
     /**
      * @param array $data
      */
@@ -76,9 +85,11 @@ class Webinar extends AbstractRequest
         $this->moderators = $data['moderators'] ?? [];
         $this->recording = $data['recording'] ?? 0;
         $this->registration_type = $data['registration_type'] ?? 'series';
+        $this->registration_type_editable = $data['registration_type_editable'] ?? null;
         $this->access = $data['access'] ?? 'all';
         $this->dates = $data['dates'] ?? [];
         $this->users_id = $data['users_id'] ?? null;
+        $this->user = $data['user'] ?? null;
         $this->language = $data['language'] ?? null;
         if(!empty($data['landingpage'])){
             $this->landingpage = new Landingpage($data['landingpage']['url'], $data['landingpage']['image']['url'], $data['landingpage']['image']['type'], $data['landingpage']['description'], $data['landingpage']['description_short'], $data['landingpage']['category']);
@@ -92,6 +103,7 @@ class Webinar extends AbstractRequest
         if(!empty($data['updated_at']) && WebinarDate::validateDateString($data['updated_at'])) {
             $this->updated_at = DateTime::createFromFormat('Y-m-d H:i:s', $data['updated_at']);
         }
+        $this->slug = $data['slug'] ?? null;
     }
 
     /**
@@ -199,6 +211,22 @@ class Webinar extends AbstractRequest
     }
 
     /**
+     * @return bool|null
+     */
+    public function getRegistrationTypeEditable(): ?bool
+    {
+        return $this->registration_type_editable;
+    }
+
+    /**
+     * @param bool|null $registration_type_editable
+     */
+    public function setRegistrationTypeEditable( ?bool $registration_type_editable ): void
+    {
+        $this->registration_type_editable = $registration_type_editable;
+    }
+
+    /**
      * @return string
      */
     public function getAccess(): string
@@ -228,6 +256,22 @@ class Webinar extends AbstractRequest
     public function setUsersId( ?int $users_id ): void
     {
         $this->users_id = $users_id;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getUser(): ?array
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param array|null $user
+     */
+    public function setUser( ?array $user ): void
+    {
+        $this->user = $user;
     }
 
     /**
@@ -327,6 +371,22 @@ class Webinar extends AbstractRequest
     }
 
     /**
+     * @return ?string
+     */
+    public function getSlug() : ?string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param ?string $slug
+     */
+    public function setSlug( ?string $slug ): void
+    {
+        $this->slug = $slug;
+    }
+
+    /**
      * @param Participant $participant
      * @param ?string $date If the webinar registration type is "date", provide a webinar
      *  date in the format "Y-m-d H:i:s" to which the participant should be registered to
@@ -346,12 +406,12 @@ class Webinar extends AbstractRequest
                     'Registration type for the webinar is "date". Please provide a valid webinar date to register a participant'
                 );
             }
-            
+
             $params['webinar_date'] = $date;
         }
 
         $resp = self::postRequest('/webinars/' . $this->getId() . '/register-participant', $params);
-        
+
         return $resp['registeredDates'];
     }
 
@@ -432,7 +492,7 @@ class Webinar extends AbstractRequest
         $resp = self::postRequest('/webinars', $params);
 
         $webinar = new self($resp['webinar']);
-        
+
         return $webinar;
     }
 }
