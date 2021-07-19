@@ -482,10 +482,10 @@ class Webinar extends AbstractRequest
             'access' => $access,
             'dates' => json_encode($webinarDates),
         ];
-        if(!is_null($users_id)){
+        if(!empty($users_id)){
             $params['users_id'] = $users_id;
         }
-        if(!is_null($language)){
+        if(!empty($language)){
             $params['language'] = $language;
         }
 
