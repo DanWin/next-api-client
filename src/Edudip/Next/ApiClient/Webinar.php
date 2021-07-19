@@ -417,7 +417,7 @@ class Webinar extends AbstractRequest
 
     /**
      * Returns a list of all webinars
-     * @return array
+     * @return Webinar[]
      * @throws AuthenticationException
      * @throws ResponseException
      */
@@ -458,7 +458,7 @@ class Webinar extends AbstractRequest
         string $title,
         array $webinarDates,
         int $maxParticipants,
-        bool $recording,
+        int $recording,
         string $registrationType = 'series',
         string $access = 'all',
         ?int $users_id = null,

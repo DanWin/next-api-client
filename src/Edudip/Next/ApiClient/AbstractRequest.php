@@ -103,6 +103,12 @@ abstract class AbstractRequest
             }
         }
 
+        if (array_key_exists('http_code', $responseHeaders)) {
+            if ($responseHeaders['http_code'] >= 400) {
+                throw new ResponseException('API returned http status code ' . $responseHeaders['http_code']);
+            }
+        }
+
         return $json;
     }
 
