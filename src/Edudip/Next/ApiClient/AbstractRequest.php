@@ -19,22 +19,31 @@ abstract class AbstractRequest
     // @var string User agent string to send in http requests
     const USER_AGENT = 'edudip/next-api-client (github.com/edudip/next-api-client)';
 
-	/**
-	 * @throws AuthenticationException
-	 * @throws ResponseException
-	 */
-	protected static function getRequest( string $endpoint, array $params = array())
+    /**
+     * @throws AuthenticationException
+     * @throws ResponseException
+     */
+    protected static function getRequest( string $endpoint, array $params = array())
     {
         return self::makeRequest('GET', $endpoint, $params);
     }
 
-	/**
-	 * @throws AuthenticationException
-	 * @throws ResponseException
-	 */
-	protected static function postRequest( string $endpoint, array $params = array())
+    /**
+     * @throws AuthenticationException
+     * @throws ResponseException
+     */
+    protected static function postRequest( string $endpoint, array $params = array())
     {
         return self::makeRequest('POST', $endpoint, $params);
+    }
+
+    /**
+     * @throws AuthenticationException
+     * @throws ResponseException
+     */
+    protected static function deleteRequest( string $endpoint, array $params = array())
+    {
+        return self::makeRequest('DELETE', $endpoint, $params);
     }
 
     /**
@@ -75,6 +84,11 @@ abstract class AbstractRequest
                 $query = http_build_query($params, '', '&');
                 curl_setopt($ch, CURLOPT_URL, self::buildEndpointUrl($endpoint) . '?' . $query);
                 break;
+
+            case 'DELETE':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, self::buildPostString($params));
+                break;
         }
 
         $responseContents = curl_exec($ch);
@@ -112,10 +126,10 @@ abstract class AbstractRequest
         return $json;
     }
 
-	/**
-	 * @param array $params
-	 * @return string
-	 */
+    /**
+     * @param array $params
+     * @return string
+     */
     private static function buildPostString(array $params) : string
     {
         $postString = '';
@@ -129,10 +143,10 @@ abstract class AbstractRequest
         return $postString;
     }
 
-	/**
-	 * @param $endpoint
-	 * @return string
-	 */
+    /**
+     * @param $endpoint
+     * @return string
+     */
     private static function buildEndpointUrl($endpoint) : string
     {
         return sprintf(

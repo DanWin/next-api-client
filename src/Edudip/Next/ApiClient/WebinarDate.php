@@ -44,6 +44,13 @@ final class WebinarDate implements JsonSerializable
     /**
      * @param DateTime $date
      * @param int $duration
+     * @param int|null $id
+     * @param string|null $status
+     * @param string|null $recorder_auth_key
+     * @param DateTime|null $date_end
+     * @param bool|null $is_editable
+     * @param array|null $participants_certificates_types
+     * @param $participants_certificates_code
      */
     public function __construct(DateTime $date,
                                 int $duration,
@@ -230,9 +237,12 @@ final class WebinarDate implements JsonSerializable
             new DateTime($input['date']),
             $input['duration'],
             $input['id'] ?? null,
-            null,
-            null,
+            $input['status'] ?? null,
+            $input['recorder_auth_key'] ?? null,
             $date_end,
+            $input['is_editable'] ?? null,
+            $input['participants_certificates_types'] ?? null,
+            $input['participants_certificates_code'] ?? null,
         );
 
         return $webinarDate;

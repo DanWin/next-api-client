@@ -46,7 +46,7 @@ class Webinar extends AbstractRequest
     // @var string
     private $access;
 
-    // @var array
+    // @var WebinarDate[]
     private $dates;
 
     // @var int
@@ -75,6 +75,7 @@ class Webinar extends AbstractRequest
 
     /**
      * @param array $data
+     * @throws Exception
      */
     public function __construct(array $data)
     {
@@ -87,7 +88,12 @@ class Webinar extends AbstractRequest
         $this->registration_type = $data['registration_type'] ?? 'series';
         $this->registration_type_editable = $data['registration_type_editable'] ?? null;
         $this->access = $data['access'] ?? 'all';
-        $this->dates = $data['dates'] ?? [];
+        $this->dates = [];
+        if(!empty($data['dates'])) {
+            foreach ( $data['dates'] as $date ) {
+                $this->dates [] = WebinarDate::deserialize( $date );
+            }
+        }
         $this->users_id = $data['users_id'] ?? null;
         $this->user = $data['user'] ?? null;
         $this->language = $data['language'] ?? null;
@@ -95,11 +101,7 @@ class Webinar extends AbstractRequest
             $this->landingpage = new Landingpage($data['landingpage']['url'], $data['landingpage']['image']['url'], $data['landingpage']['image']['type'], $data['landingpage']['description'], $data['landingpage']['description_short'], $data['landingpage']['category']);
         }
         if(!empty($data['next_date'])) {
-            try {
-                $this->next_date = WebinarDate::deserialize( $data[ 'next_date' ] );
-            } catch (Exception $e){
-
-            }
+            $this->next_date = WebinarDate::deserialize( $data[ 'next_date' ] );
         }
         if(!empty($data['created_at']) && WebinarDate::validateDateString($data['created_at'])) {
             $this->created_at = DateTime::createFromFormat('Y-m-d H:i:s', $data['created_at']);
@@ -127,27 +129,71 @@ class Webinar extends AbstractRequest
     }
 
     /**
-     * @return array A list of WebinarDates objects, representing
+     * @return WebinarDate[] A list of WebinarDates objects, representing
      *  the dates, the webinar takes place.
      * @throws Exception
      */
     public function getDates() : array
     {
-        $webinarDates = [ ];
-
-        foreach ($this->dates as $date) {
-            $webinarDates []= WebinarDate::deserialize($date);
-        }
-
-        return $webinarDates;
+        return $this->dates;
     }
 
     /**
-     * @return int
+     * @param WebinarDate[] $dates A list of WebinarDates objects, representing
+     *  the dates, the webinar takes place.
+     * @throws Exception
      */
-    public function getId() : int
+    public function setDates(array $dates) : void
+    {
+        $this->dates = $dates;
+    }
+
+    /**
+     * @param DateTime $date
+     * @throws AuthenticationException
+     * @throws ResponseException
+     */
+    public function deleteWebinarDate(DateTime $date) : void
+    {
+        foreach ($this->dates as $i => $webinarDate){
+            if($webinarDate->getDate()->format('Y-m-d H:i:s') === $date->format('Y-m-d H:i:s')){
+                if(count($this->dates) > 1) {
+                    self::deleteRequest( '/webinars/' . $this->id . '/dates/' . $webinarDate->getId() );
+                } else {
+                    $this->deleteWebinar();
+                }
+                unset( $this->dates[ $i ] );
+                break;
+            }
+        }
+    }
+
+    /**
+     * @throws AuthenticationException
+     * @throws ResponseException
+     */
+    public function deleteWebinar() : void
+    {
+        if(!is_null($this->id)) {
+            self::deleteRequest( '/webinars/' . $this->id );
+            $this->id = null;
+        }
+    }
+
+    /**
+     * @return ?int
+     */
+    public function getId() : ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     */
+    public function setId(?int $id) : void
+    {
+        $this->id = $id;
     }
 
     /**
@@ -424,6 +470,7 @@ class Webinar extends AbstractRequest
      * @return Webinar[]
      * @throws AuthenticationException
      * @throws ResponseException
+     * @throws Exception
      */
     public static function all() : array
     {
@@ -443,6 +490,7 @@ class Webinar extends AbstractRequest
      * @return Webinar
      * @throws AuthenticationException
      * @throws ResponseException
+     * @throws Exception
      */
     public static function getById(int $webinarId) : Webinar
     {
@@ -457,6 +505,7 @@ class Webinar extends AbstractRequest
      * @throws InvalidArgumentException
      * @throws AuthenticationException
      * @throws ResponseException
+     * @throws Exception
      */
     public static function create(
         string $title,
