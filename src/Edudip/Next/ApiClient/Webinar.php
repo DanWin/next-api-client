@@ -504,10 +504,18 @@ class Webinar extends AbstractRequest
 
     /**
      * Creates a new webinar
-     * @throws InvalidArgumentException
+     * @param string $title
+     * @param WebinarDate[] $webinarDates
+     * @param int $maxParticipants
+     * @param int $recording
+     * @param string $registrationType
+     * @param string $access
+     * @param int|null $users_id
+     * @param string|null $language
+     * @return Webinar
      * @throws AuthenticationException
+     * @throws InvalidArgumentException
      * @throws ResponseException
-     * @throws Exception
      */
     public static function create(
         string $title,
@@ -545,6 +553,51 @@ class Webinar extends AbstractRequest
         }
 
         $resp = self::postRequest('/webinars', $params);
+
+        $webinar = new self($resp['webinar']);
+
+        return $webinar;
+    }
+
+    /**
+     * Updates an existing webinar
+     * @param int $id
+     * @param string|null $title
+     * @param int|null $maxParticipants
+     * @param int|null $recording
+     * @param string|null $registrationType
+     * @param string|null $access
+     * @return Webinar
+     * @throws AuthenticationException
+     * @throws ResponseException
+     */
+    public static function update(
+        int $id,
+        ?string $title = null,
+        ?int $maxParticipants = null,
+        ?int $recording = null,
+        ?string $registrationType = null,
+        ?string $access = null
+    ) : Webinar {
+
+        $params = [];
+        if(!is_null($title)){
+            $params['title'] = $title;
+        }
+        if(!is_null($maxParticipants)){
+            $params['max_participants'] = $maxParticipants;
+        }
+        if(!is_null($recording)){
+            $params['recording'] = $recording;
+        }
+        if(!is_null($registrationType)){
+            $params['registration_type'] = $registrationType;
+        }
+        if(!is_null($access)){
+            $params['access'] = $access;
+        }
+
+        $resp = self::putRequest('/webinars/' . $id, $params);
 
         $webinar = new self($resp['webinar']);
 

@@ -47,6 +47,15 @@ abstract class AbstractRequest
     }
 
     /**
+     * @throws AuthenticationException
+     * @throws ResponseException
+     */
+    protected static function putRequest( string $endpoint, array $params = array())
+    {
+        return self::makeRequest('PUT', $endpoint, $params);
+    }
+
+    /**
      * @throws ResponseException
      * @throws AuthenticationException
      */
@@ -87,6 +96,11 @@ abstract class AbstractRequest
 
             case 'DELETE':
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, self::buildPostString($params));
+                break;
+
+            case 'PUT':
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
                 curl_setopt($ch, CURLOPT_POSTFIELDS, self::buildPostString($params));
                 break;
         }
