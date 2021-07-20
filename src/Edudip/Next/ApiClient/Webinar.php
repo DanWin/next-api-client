@@ -462,6 +462,8 @@ class Webinar extends AbstractRequest
 
         $resp = self::postRequest('/webinars/' . $this->getId() . '/register-participant', $params);
 
+        $this->participants []= $participant;
+
         return $resp['registeredDates'];
     }
 
