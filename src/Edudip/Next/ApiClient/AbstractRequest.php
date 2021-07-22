@@ -14,7 +14,7 @@ use Edudip\Next\ApiClient\Error\ResponseException;
 abstract class AbstractRequest
 {
     // @var int Request timeout in seconds
-    const TIMEOUT = 10;
+    const TIMEOUT = 30;
 
     // @var string User agent string to send in http requests
     const USER_AGENT = 'edudip/next-api-client (github.com/edudip/next-api-client)';
