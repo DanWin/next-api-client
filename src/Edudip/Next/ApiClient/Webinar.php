@@ -169,6 +169,30 @@ class Webinar extends AbstractRequest
     }
 
     /**
+     * @param DateTime $date
+     * @param int $duration
+     * @throws AuthenticationException
+     * @throws ResponseException
+     */
+    public function addWebinarDate(DateTime $date, int $duration) : void
+    {
+        $found = false;
+        foreach ($this->dates as $i => $webinarDate){
+            if($webinarDate->getDate()->format('Y-m-d H:i:s') === $date->format('Y-m-d H:i:s')){
+                $found = true;
+                break;
+            }
+        }
+        if(!$found){
+            $params = [
+                'date' => $date->format('Y-m-d H:i:s'),
+                'duration' => $duration,
+            ];
+            self::postRequest( '/webinars/' . $this->id . '/add-date', $params );
+        }
+    }
+
+    /**
      * @throws AuthenticationException
      * @throws ResponseException
      */
