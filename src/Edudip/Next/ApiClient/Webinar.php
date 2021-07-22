@@ -540,6 +540,7 @@ class Webinar extends AbstractRequest
      * @throws AuthenticationException
      * @throws InvalidArgumentException
      * @throws ResponseException
+     * @throws Exception
      */
     public static function create(
         string $title,
@@ -594,6 +595,7 @@ class Webinar extends AbstractRequest
      * @return Webinar
      * @throws AuthenticationException
      * @throws ResponseException
+     * @throws Exception
      */
     public static function update(
         int $id,
