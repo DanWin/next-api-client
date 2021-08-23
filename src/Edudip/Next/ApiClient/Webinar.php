@@ -82,8 +82,14 @@ class Webinar extends AbstractRequest
         $this->id = $data['id'] ?? null;
         $this->title = $data['title'] ?? '';
         $this->max_participants = $data['max_participants'] ?? 1;
-        $this->participants = $data['participants'] ?? [];
-        $this->moderators = $data['moderators'] ?? [];
+        $this->participants = [];
+	    if(!empty($data['participants'])) {
+		    foreach ( $data['participants'] as $participant ) {
+			    $this->participants [] = Participant::deserialize( $participant );
+		    }
+	    }
+
+	    $this->moderators = $data['moderators'] ?? [];
         $this->recording = $data['recording'] ?? 0;
         $this->registration_type = $data['registration_type'] ?? 'series';
         $this->registration_type_editable = $data['registration_type_editable'] ?? null;
@@ -472,7 +478,11 @@ class Webinar extends AbstractRequest
      */
     public function registerParticipant(Participant $participant, ?string $date = null) : array
     {
-        $params = $participant->toArray();
+        $params = [
+	        'email' => $participant->getEmail(),
+	        'firstname' => $participant->getFirstname(),
+	        'lastname' => $participant->getLastname(),
+        ];
 
         if ($this->registration_type === 'date') {
             if ($date === null || ! WebinarDate::validateDateString($date)) {
@@ -489,6 +499,34 @@ class Webinar extends AbstractRequest
         $this->participants []= $participant;
 
         return $resp['registeredDates'];
+    }
+
+	/**
+	 * @param string $email
+	 * @throws AuthenticationException
+	 * @throws ResponseException
+	 * @throws Exception
+	 */
+    public function cancelRegistration(string $email) : void
+    {
+        $index = null;
+        $participant = null;
+        foreach($this->participants as $k => $v){
+            if($v->getEmail() === $email){
+                $index = $k;
+                $participant = $v;
+                break;
+            }
+        }
+        if(is_null($participant)){
+        	throw new Exception('Participant not found');
+        }
+        $params = [
+            'email' => $email,
+            'auth_key' => $participant->getAuthKey(),
+        ];
+        self::postRequest('/webinars/' . $this->getId() . '/cancelRegistration', $params);
+        unset($this->participants[$index]);
     }
 
     /**
