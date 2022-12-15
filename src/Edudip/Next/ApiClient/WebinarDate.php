@@ -89,7 +89,7 @@ final class WebinarDate implements JsonSerializable
      */
     public static function validateDateString($input)
     {
-        $fmtStr = 'Y-m-d h:i:s';
+        $fmtStr = 'Y-m-d H:i:s';
         $dt = DateTime::createFromFormat($fmtStr, $input);
 
         return (
