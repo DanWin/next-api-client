@@ -11,10 +11,9 @@ namespace Edudip\Next\ApiClient;
 final class EdudipNext
 {
     // @var string The edudip next API key to be used to authenticate requests
-    public static $apiKey;
+    public static string $apiKey;
 
-    // @var string
-    public static $apiBase = 'https://api.edudip-next.com/api';
+    public static string $apiBase = 'https://api.edudip-next.com/api';
 
     /**
      * Returns the currently used API key.

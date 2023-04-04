@@ -14,29 +14,21 @@ use JsonSerializable;
 
 final class WebinarDate implements JsonSerializable
 {
-    // @var ?int
-    private $id;
+    private ?int $id;
 
-    // @var DateTime
-    private $date;
+    private DateTime $date;
 
-    // @var int
-    private $duration;
+    private int $duration;
 
-    // @var ?string
-    private $status;
+    private ?string $status;
 
-    // @var ?string
-    private $recorder_auth_key;
+    private ?string $recorder_auth_key;
 
-    // @var ?DateTime
-    private $date_end;
+    private ?DateTime $date_end;
 
-    // @var ?bool
-    private $is_editable;
+    private ?bool $is_editable;
 
-    // @var ?array
-    private $participants_certificates_types;
+    private ?array $participants_certificates_types;
 
     // @var mixed
     private $participants_certificates_code;

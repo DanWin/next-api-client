@@ -13,32 +13,28 @@ use JsonSerializable;
 
 final class Participant implements JsonSerializable
 {
-    // @var string
-    private $email;
+    private string $email;
 
-    // @var string
-    private $firstname;
+    private string $firstname;
 
-    // @var string
-    private $lastname;
+    private string $lastname;
 
-    // @var ?array
-    private $registeredDates;
+    private ?array $registeredDates;
 
-    // @var ?string
-    private $auth_key;
+    private ?string $auth_key;
 
-    // @var ?DateTime
-    private $created_at;
+    private ?DateTime $created_at;
 
-    // @var ?DateTime
-    private $updated_at;
+    private ?DateTime $updated_at;
 
-    /**
-     * @param string $email
-     * @param string $firstname
-     * @param string $lastname
-     */
+	/**
+	 * @param string $email
+	 * @param string $firstname
+	 * @param string $lastname
+	 * @param string|null $auth_key
+	 * @param DateTime|null $created_at
+	 * @param DateTime|null $updated_at
+	 */
     public function __construct(string $email, string $firstname, string $lastname, ?string $auth_key = null, ?DateTime $created_at = null, ?DateTime $updated_at = null)
     {
         $this->email = $email;

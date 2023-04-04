@@ -16,62 +16,44 @@ use Exception;
 
 class Webinar extends AbstractRequest
 {
-    // @var int
-    private $id;
+    private ?int $id;
 
-    // @var string
-    private $title;
+    private string $title;
 
-    // @var int
-    private $max_participants;
+    private int $max_participants;
 
-    // @var int
-    private $participants_count;
+    private int $participants_count;
 
-    // @var array
-    private $participants;
+    private array $participants;
 
-    // @var array
-    private $moderators;
+    private array $moderators;
 
-    // @var int
-    private $recording;
+    private int $recording;
 
-    // @var string
-    private $registration_type;
+    private string $registration_type;
 
-    // @var bool
-    private $registration_type_editable;
+    private bool $registration_type_editable;
 
-    // @var string
-    private $access;
+    private string $access;
 
     // @var WebinarDate[]
-    private $dates;
+    private array $dates;
 
-    // @var int
-    private $users_id;
+    private int $users_id;
 
-    // @var array
-    private $user;
+    private array $user;
 
-    // @var string
-    private $language;
+    private string $language;
 
-    // @var Landingpage
-    private $landingpage;
+    private Landingpage $landingpage;
 
-    // @var ?WebinarDate
-    private $next_date;
+    private ?WebinarDate $next_date;
 
-    // @var ?DateTime
-    private $created_at;
+    private ?DateTime $created_at;
 
-    // @var ?DateTime
-    private $updated_at;
+    private ?DateTime $updated_at;
 
-    // @var ?string
-    private $slug;
+    private ?string $slug;
 
     /**
      * @param array $data
@@ -183,7 +165,7 @@ class Webinar extends AbstractRequest
     public function addWebinarDate(DateTime $date, int $duration) : void
     {
         $found = false;
-        foreach ($this->dates as $i => $webinarDate){
+        foreach ($this->dates as $webinarDate){
             if($webinarDate->getDate()->format('Y-m-d H:i:s') === $date->format('Y-m-d H:i:s')){
                 $found = true;
                 break;

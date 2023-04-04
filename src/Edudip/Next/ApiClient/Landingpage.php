@@ -12,23 +12,17 @@ use JsonSerializable;
 
 final class Landingpage implements JsonSerializable
 {
-    // @var string
-    private $url;
+    private string $url;
 
-    // @var string
-    private $image_url;
+    private string $image_url;
 
-    // @var string
-    private $image_type;
+    private string $image_type;
 
-    // @var string
-    private $description;
+    private string $description;
 
-    // @var string
-    private $description_short;
+    private string $description_short;
 
-    // @var array
-    private $category;
+    private array $category;
 
     /**
      * @param string $url
